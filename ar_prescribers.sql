@@ -76,10 +76,47 @@ LIMIT 1;
 
 
 -- 3.a. Which drug (generic_name) had the highest total drug cost?
+SELECT *
+FROM prescription
+
+SELECT drug.generic_name AS drug, rx.total_drug_cost AS cost
+FROM prescriber AS rxer
+LEFT JOIN prescription AS rx
+USING(npi)
+LEFT JOIN drug
+USING(drug_name)
+WHERE drug.generic_name IS NOT NULL 
+	AND rx.total_drug_cost IS NOT NULL
+ORDER BY cost DESC
+LIMIT 1;
+-- "PIRFENIDONE" had the highest total drug cost at $2829174.3
+
 
 -- 3.b. Which drug (generic_name) has the hightest total cost per day? **Bonus: Round your cost per day column to 2 decimal places. Google ROUND to see how this works.**
 
+SELECT 
+	drug.generic_name AS drug, 
+	rx.total_drug_cost AS cost,ROUND(rx.total_drug_cost / rx.total_day_supply, 2) AS cost_per_day
+FROM prescriber AS rxer
+LEFT JOIN prescription AS rx
+USING(npi)
+LEFT JOIN drug
+USING(drug_name)
+WHERE drug.generic_name IS NOT NULL 
+	AND rx.total_drug_cost IS NOT NULL
+	AND rx.total_day_supply IS NOT NULL
+ORDER BY cost_per_day DESC
+LIMIT 1;
+-- highest cost per day is "IMMUN GLOB G(IGG)/GLY/IGA OV50" at $7141.11
+
+
+
+
 -- 4.a. For each drug in the drug table, return the drug name and then a column named 'drug_type' which says 'opioid' for drugs which have opioid_drug_flag = 'Y', says 'antibiotic' for those drugs which have antibiotic_drug_flag = 'Y', and says 'neither' for all other drugs. **Hint:** You may want to use a CASE expression for this. See https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-case/ 
+
+
+
+
 
 --4. b. Building off of the query you wrote for part a, determine whether more was spent (total_drug_cost) on opioids or on antibiotics. Hint: Format the total costs as MONEY for easier comparision.
 
