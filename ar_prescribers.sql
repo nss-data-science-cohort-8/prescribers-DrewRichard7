@@ -246,10 +246,46 @@ HAVING rx.total_claim_count >= 3000;
 
 -- 7. The goal of this exercise is to generate a full list of all pain management specialists in Nashville and the number of claims they had for each opioid. **Hint:** The results from all 3 parts will have 637 rows.
 
---7.a. First, create a list of all npi/drug_name combinations for pain management specialists (specialty_description = 'Pain Management) in the city of Nashville (nppes_provider_city = 'NASHVILLE'), where the drug is an opioid (opiod_drug_flag = 'Y'). **Warning:** Double-check your query before running it. You will only need to use the prescriber and drug tables since you don't need the claims numbers yet.
+
+--7.a. First, create a list of all npi/drug_name combinations for pain management specialists (specialty_description = 'Pain Management') in the city of Nashville (nppes_provider_city = 'NASHVILLE'), where the drug is an opioid (opiod_drug_flag = 'Y'). **Warning:** Double-check your query before running it. You will only need to use the prescriber and drug tables since you don't need the claims numbers yet.
+
+SELECT p.npi AS npi, d.drug_name AS drug
+FROM prescriber AS p
+CROSS JOIN drug AS d 
+WHERE p.specialty_description = 'Pain Management'
+	AND p.nppes_provider_city = 'NASHVILLE'
+	AND d.opioid_drug_flag = 'Y';
+
 
 --7.b. Next, report the number of claims per drug per prescriber. Be sure to include all combinations, whether or not the prescriber had any claims. You should report the npi, the drug name, and the number of claims (total_claim_count).
-    
+
+SELECT 
+	rxer.npi,
+	d.drug_name,
+	SUM(rx.total_claim_count)
+FROM prescriber AS rxer
+LEFT JOIN prescription AS rx
+USING(npi)
+CROSS JOIN drug AS d
+WHERE rxer.specialty_description = 'Pain Management'
+	AND rxer.nppes_provider_city = 'NASHVILLE'
+	AND d.opioid_drug_flag = 'Y'
+GROUP BY rxer.npi, d.drug_name
+ORDER BY rxer.npi DESC;
+
+	
 --7.c. Finally, if you have not done so already, fill in any missing values for total_claim_count with 0. Hint - Google the COALESCE function.
 
-
+SELECT 
+	rxer.npi,
+	d.drug_name,
+	COALESCE(SUM(rx.total_claim_count), 0) AS total_claim_count
+FROM prescriber AS rxer
+CROSS JOIN drug AS d
+LEFT JOIN prescription AS rx
+USING(npi)
+WHERE rxer.specialty_description = 'Pain Management'
+	AND rxer.nppes_provider_city = 'NASHVILLE'
+	AND d.opioid_drug_flag = 'Y'
+GROUP BY rxer.npi, d.drug_name
+ORDER BY rxer.npi DESC;
