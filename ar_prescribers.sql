@@ -1,9 +1,9 @@
 -- 1.a Which prescriber had the highest total number of claims (totaled over all drugs)? Report the npi and the total number of claims.
 SELECT *
-FROM prescriber
+FROM prescriber;
 
 SELECT * 
-FROM prescription
+FROM prescription;
 
 SELECT npi, rx.total_claim_count AS total_claim_count
 FROM prescriber AS rxer
@@ -72,9 +72,6 @@ LIMIT 1;
 
 -- 2.c **Challenge Question:** Are there any specialties that appear in the prescriber table that have no associated prescriptions in the prescription table?
 
--- unique specialties
-
-
 SELECT DISTINCT specialty_description
 FROM prescriber
 EXCEPT
@@ -82,7 +79,6 @@ SELECT DISTINCT p.specialty_description
 FROM prescriber
 INNER JOIN prescription
 USING (npi)
-
 
 --2.d **Difficult Bonus:** *Do not attempt until you have solved all other problems!* For each specialty, report the percentage of total claims by that specialty which are for opioids. Which specialties have a high percentage of opioids?
 
@@ -119,7 +115,7 @@ ORDER BY total_claims DESC;
 
 -- 3.a. Which drug (generic_name) had the highest total drug cost?
 SELECT *
-FROM prescription
+FROM prescription;
 
 SELECT drug.generic_name AS drug, rx.total_drug_cost AS cost
 FROM prescriber AS rxer
