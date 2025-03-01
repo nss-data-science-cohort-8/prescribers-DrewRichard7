@@ -1,9 +1,9 @@
 -- 1.a Which prescriber had the highest total number of claims (totaled over all drugs)? Report the npi and the total number of claims.
 SELECT *
-FROM prescriber;
+FROM prescriber
 
 SELECT * 
-FROM prescription;
+FROM prescription
 
 SELECT npi, rx.total_claim_count AS total_claim_count
 FROM prescriber AS rxer
